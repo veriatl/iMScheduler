@@ -16,9 +16,9 @@ from string import *
 SZ=8
 # students' availability, 1 for could attend, 0 for a firm not able to attend.
 cfg1 = '10001000'
-cfg2 = '00000000'
-cfg3 = '00111100'
-cfg4 = '01000010'
+cfg2 = '10000000'
+cfg3 = '10111100'
+cfg4 = '11000010'
 
 cfgs = [cfg1,cfg2,cfg3,cfg4]
 
@@ -89,12 +89,18 @@ def main():
 		for tuple in cand:
 			F.append(mustZero(tuple[0],tuple[1]))
 	
+	# soft constrains: 
+	
 
+	
+	
+	F.append(to_int(query(A,0))==0)
+	print F
 	_prettyPrint(get_models(F,100)[0]);
 
 
 	
-	# soft constrains: 
+
 
 
 

@@ -15,6 +15,13 @@ def Empty(sz):
 def All(sz):
     return BitVecVal(2**sz - 1, sz)
 
+def to_int(x):
+    return ArithRef(Z3_mk_bv2int(x.ctx_ref(), x.as_ast(), 0), x.ctx)
+
+# query pos in S
+def query(S, pos):
+    return (S & (1 << pos)) >> pos
+	
 # bit at [pos] of [S] is 1
 def mustOne(S, pos):
     sz = S.size()
