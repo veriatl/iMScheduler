@@ -50,6 +50,9 @@ def genNonAvailCond(nonAvail, candidate):
 
 
 
+def BV2Int(var):
+	ctx = var.ctx
+	return ArithRef(Z3_mk_bv2int(ctx.ref(), var.as_ast(), 0), ctx)
 
 	
 	
@@ -57,7 +60,6 @@ def genNonAvailCond(nonAvail, candidate):
 	
 def main():
 	# SAFE STATE STARTS, FUN STAFF
-	
 	global cfg
 	
 	zerosPos = (indexMapping(orTogether(cfgs, SZ)))
@@ -90,13 +92,15 @@ def main():
 			F.append(mustZero(tuple[0],tuple[1]))
 	
 	# soft constrains: 
+	F.append(ZeroExt(5, Extract(7,7,A))+ ZeroExt(5, Extract(7,7,B)) + ZeroExt(5, Extract(7,7,C)) + ZeroExt(5, Extract(7,7,D)) > 3)
+	_prettyPrint(get_models(F,100)[0]);
+
+
 	
 
 	
 	
-	F.append(to_int(query(A,0))==0)
-	print F
-	_prettyPrint(get_models(F,100)[0]);
+
 
 
 	

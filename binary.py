@@ -20,7 +20,7 @@ def to_int(x):
 
 # query pos in S
 def query(S, pos):
-    return (S & (1 << pos)) >> pos
+    return Extract(pos,pos,S)
 	
 # bit at [pos] of [S] is 1
 def mustOne(S, pos):

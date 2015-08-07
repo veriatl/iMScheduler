@@ -10,6 +10,7 @@ def get_models(F, M):
 	s.set(timeout=50) 
 	s.set(':models', True) 
 	s.set(':auto-cfgig', False) 
+	s.set(':smt.bv.enable_int2bv',True) 
 	
 	# add F to solver s.
 	s.add(F)
