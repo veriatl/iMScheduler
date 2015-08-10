@@ -55,7 +55,12 @@ def BV2Int(var):
 	return ArithRef(Z3_mk_bv2int(ctx.ref(), var.as_ast(), 0), ctx)
 
 	
-	
+# the pos of each elem in LIST 'op' to N, where 'op' could be LT, GT, LE, GE, EQ, NEQ, 
+# TODO: ONLY IMPLEMENT EQ now.	
+def opTo(POS, LIST, N):
+	functor = (lambda x,y: ZeroExt(5, Extract(x,x,y)))
+	posList = [POS] * len(LIST)
+	return reduce(lambda x, y: x+y, map(functor, posList, LIST)) == N	
 	
 	
 def main():
@@ -92,14 +97,13 @@ def main():
 			F.append(mustZero(tuple[0],tuple[1]))
 	
 	# soft constrains: 
-	F.append(ZeroExt(5, Extract(7,7,A))+ ZeroExt(5, Extract(7,7,B)) + ZeroExt(5, Extract(7,7,C)) + ZeroExt(5, Extract(7,7,D)) > 3)
+	F.append(opTo(7, [A,B,C,D], 4))
 	_prettyPrint(get_models(F,100)[0]);
 
 
 	
 
-	
-	
+
 
 
 
