@@ -1,0 +1,7 @@
+- Add Performance Table of Demonstrators, 
+	- e.g. PA = '01301300'
+	- the highest performance demonstrator will be head demonstrator
+		- then, it must assign to that course
+		
+- Add Price Table of Demonstrators,
+	- to calculate most cost efficient schedule that fits the given criteria.

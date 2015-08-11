@@ -54,7 +54,7 @@ def toBinPos(sz,i):
 	return sz-1-i
 
 # the pos at each elem in LIST will 'op' to N, where 'op' could be LT, GT, LE, GE, EQ, NEQ, 	
-# TODO: ONLY IMPLEMENT EQ now.
-def opAfterSum(POSLIST, VARLIST, N):
+def opAfterSum(POSLIST, VARLIST, N, OP):
 	functor = (lambda x,y: ZeroExt(5, Extract(x,x,y)))
-	return reduce(lambda x, y: x+y, map(functor, POSLIST, VARLIST)) == N
+	red = reduce(lambda x, y: x+y, map(functor, POSLIST, VARLIST))
+	return map(OP, [red], [N])[0]

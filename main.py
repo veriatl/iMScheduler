@@ -23,7 +23,14 @@ cfg4 = '11000010'
 cfgs = [cfg1,cfg2,cfg3,cfg4]
 
 
-		
+# Price Table
+
+# Performance Table, if performance is high, Head Demonstrator
+
+
+
+
+# pretty print the result	
 def _prettyPrint(list):
 	for key in list: 
 		print "%s -> \t %s" % (key, padZero(bin(list[key].as_long())[2:],SZ))
@@ -48,14 +55,14 @@ def genNonAvailCond(nonAvail, candidate):
 	return r
 
 # a course, identified by POS, require N student from STUDLIST
-def courseRequire(POS, STUDLIST, N):
+def courseRequire(POS, STUDLIST, N, OP):
 	posList = [POS] * len(STUDLIST)
-	return opAfterSum(posList, STUDLIST, N)
+	return opAfterSum(posList, STUDLIST, N, OP)
 	
 # a student (STUD) can chose up to N courses from mutual exclusion list (EXLIST) 
-def personalConflict(EXLIST, STUD, N):
+def personalConflict(EXLIST, STUD, N, OP):
 	studList = [STUD] * len(EXLIST)
-	return opAfterSum(EXLIST, studList, N)
+	return opAfterSum(EXLIST, studList, N, OP)
 
 	
 
@@ -94,25 +101,16 @@ def main():
 			F.append(mustZero(tuple[0],tuple[1]))
 	
 	# soft constrains: 
-	F.append(courseRequire(7, [A,B,C,D], 4))
-	F.append(personalConflict([7,3],A,1))
+	F.append(courseRequire(7, [A,B,C,D], 3, operator.eq))	# chose 3 stud out of all
+	F.append(personalConflict([7,3],A,1,operator.eq))	# chose either 7 or 3
+	F.append(personalConflict([7,6,5,4,3,2,1,0],A,3,operator.lt)) # not exceeding 3 courses
+
+	# solve and print result
+	print len(get_models(F,100))
 	_prettyPrint(get_models(F,100)[0]);
 
 	
 	
-
-
-
-
-
-	
-
-
-
-
-	# iterate solutions
-	
-
 
 	
 	
