@@ -47,21 +47,18 @@ def genNonAvailCond(nonAvail, candidate):
 		r.append(zip(pad(v, len(nonAvail[i])), nonAvail[i]))
 	return r
 
-
-
-
-def BV2Int(var):
-	ctx = var.ctx
-	return ArithRef(Z3_mk_bv2int(ctx.ref(), var.as_ast(), 0), ctx)
+# a course, identified by POS, require N student from STUDLIST
+def courseRequire(POS, STUDLIST, N):
+	posList = [POS] * len(STUDLIST)
+	return opAfterSum(posList, STUDLIST, N)
+	
+# a student (STUD) can chose up to N courses from mutual exclusion list (EXLIST) 
+def personalConflict(EXLIST, STUD, N):
+	studList = [STUD] * len(EXLIST)
+	return opAfterSum(EXLIST, studList, N)
 
 	
-# the pos of each elem in LIST 'op' to N, where 'op' could be LT, GT, LE, GE, EQ, NEQ, 
-# TODO: ONLY IMPLEMENT EQ now.	
-def opTo(POS, LIST, N):
-	functor = (lambda x,y: ZeroExt(5, Extract(x,x,y)))
-	posList = [POS] * len(LIST)
-	return reduce(lambda x, y: x+y, map(functor, posList, LIST)) == N	
-	
+
 	
 def main():
 	# SAFE STATE STARTS, FUN STAFF
@@ -97,10 +94,11 @@ def main():
 			F.append(mustZero(tuple[0],tuple[1]))
 	
 	# soft constrains: 
-	F.append(opTo(7, [A,B,C,D], 4))
+	F.append(courseRequire(7, [A,B,C,D], 4))
+	F.append(personalConflict([7,3],A,1))
 	_prettyPrint(get_models(F,100)[0]);
 
-
+	
 	
 
 

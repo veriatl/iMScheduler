@@ -52,3 +52,9 @@ def pad(elem, time):
 # Natural position to binary position
 def toBinPos(sz,i):
 	return sz-1-i
+
+# the pos at each elem in LIST will 'op' to N, where 'op' could be LT, GT, LE, GE, EQ, NEQ, 	
+# TODO: ONLY IMPLEMENT EQ now.
+def opAfterSum(POSLIST, VARLIST, N):
+	functor = (lambda x,y: ZeroExt(5, Extract(x,x,y)))
+	return reduce(lambda x, y: x+y, map(functor, POSLIST, VARLIST)) == N
