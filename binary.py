@@ -53,6 +53,11 @@ def pad(elem, time):
 def toBinPos(sz,i):
 	return sz-1-i
 
+# count how many of one in the given number of binary format
+def countOnes(num):
+	return bin(num).count("1")	
+	
+	
 # the pos at each elem in LIST will 'op' to N, where 'op' could be LT, GT, LE, GE, EQ, NEQ, 	
 def opAfterSum(POSLIST, VARLIST, N, OP):
 	functor = (lambda x,y: ZeroExt(5, Extract(x,x,y)))

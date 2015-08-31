@@ -9,7 +9,7 @@ def get_models(F, M):
 	s.set(unsat_core=True)
 	s.set(timeout=50) 
 	s.set(':models', True) 
-	s.set(':auto-cfgig', False) 
+	s.set(':auto-config', False) 
 	s.set(':smt.bv.enable_int2bv',True) 
 	
 	# add F to solver s.
@@ -35,3 +35,26 @@ def get_models(F, M):
 			s.add(Or(block))
 		else:
 			return result
+			
+
+
+# Generate a solution 
+def get_model(F):
+	result = []
+	s = Solver()
+	
+	# configure solver
+	s.set(unsat_core=True)
+	s.set(timeout=50) 
+	s.set(':models', True) 
+	s.set(':auto-config', False) 
+	s.set(':smt.bv.enable_int2bv',True) 
+	
+	# add F to solver s.
+	s.add(F)
+	
+	if s.check() == sat:
+		return s.model()
+	else:
+		return None
+	

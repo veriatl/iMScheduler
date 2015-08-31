@@ -23,6 +23,8 @@ cfg4 = '11000010'
 cfgs = [cfg1,cfg2,cfg3,cfg4]
 
 
+rateTab = {}
+
 # Price Table
 
 # Performance Table, if performance is high, Head Demonstrator
@@ -30,10 +32,12 @@ cfgs = [cfg1,cfg2,cfg3,cfg4]
 
 
 
+
 # pretty print the result	
-def _prettyPrint(list):
-	for key in list: 
-		print "%s -> \t %s" % (key, padZero(bin(list[key].as_long())[2:],SZ))
+# change to build-in format?
+def _prettyPrint(MAP):
+	for key in MAP: 
+		print "%s -> \t %s" % (key, padZero(bin(MAP[key].as_long())[2:],SZ))
 
 
 # return a list of list, each list (a,b,c...) specifies X is not available for a,b,c...
@@ -64,7 +68,33 @@ def personalConflict(EXLIST, STUD, N, OP):
 	studList = [STUD] * len(EXLIST)
 	return opAfterSum(EXLIST, studList, N, OP)
 
+def getRate(name):
+	return 15
+
+def calRate(name, jobs):
+	r = getRate(name)
+	n = countOnes(jobs.as_long())
+	return n*r
 	
+def SumInSolution(map):
+	sum = 0
+	for e in map:
+		if not e.name().startswith("__CFG"):
+			sum += calRate(e.name(), map[e])
+	return sum	
+
+def SumInConstraint(STUDLIST):
+	sum = 0
+	for STUD in STUDLIST:
+		sum += SumInConstraintIndv(STUD, 15)
+	return sum
+	
+def SumInConstraintIndv(STUD, PRICE):
+	VARLIST = [STUD] * SZ
+	POSLIST = range(0,SZ)
+	PADDING_SIZE = 31
+	functor = (lambda x,y: ZeroExt(PADDING_SIZE, Extract(x,x,y)))
+	return reduce(lambda x, y: x+y, map(functor, POSLIST, VARLIST)) * PRICE
 
 	
 def main():
@@ -72,7 +102,7 @@ def main():
 	global cfg
 	
 	zerosPos = (indexMapping(orTogether(cfgs, SZ)))
-	GHOST = BitVec('__GHOST',SZ)	# To fulfil non availability, make sure a partial solution can be generated
+	GHOST = BitVec('__CFG_GHOST',SZ)	# To fulfil non availability, make sure a partial solution can be generated
 	
 	A = BitVec('A', SZ)
 	B = BitVec('B', SZ)
@@ -101,13 +131,33 @@ def main():
 			F.append(mustZero(tuple[0],tuple[1]))
 	
 	# soft constrains: 
-	F.append(courseRequire(7, [A,B,C,D], 3, operator.eq))	# chose 3 stud out of all
-	F.append(personalConflict([7,3],A,1,operator.eq))	# chose either 7 or 3
-	F.append(personalConflict([7,6,5,4,3,2,1,0],A,3,operator.lt)) # not exceeding 3 courses
-
+	#F.append(courseRequire(7, [A,B,C,D], 3, operator.eq))	# chose 3 stud out of all
+	#F.append(personalConflict([7,3],A,1,operator.eq))	# chose either 7 or 3
+	#F.append(personalConflict([7,6,5,4,3,2,1,0],A,3,operator.lt)) # not exceeding 3 courses
+	
+	
 	# solve and print result
-	print len(get_models(F,100))
-	_prettyPrint(get_models(F,100)[0]);
+	sol = get_models(F,100)
+	firstSol = sol[0]
+	_prettyPrint(firstSol)
+
+	sys.stdout.flush()
+	cont = input("Next? ")
+	sys.stdout.flush()
+	
+	while(cont == 1):
+		F.append(SumInSolution(firstSol) > SumInConstraint([A,B,C,D]))
+		firstSol = get_model(F)
+		if not firstSol is None:
+			print SumInSolution(firstSol)
+			print _prettyPrint(firstSol)
+			sys.stdout.flush()
+		else:
+			print "No better solution."
+			break;
+		cont = input("Next? ")
+	
+
 
 	
 	
